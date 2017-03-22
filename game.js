@@ -107,6 +107,7 @@ function checkBestPoint(){
   }
   bestPoints = currentPoints;
   updateBestPoints();
+  saveTopScore(bestPoints);
 }
 
 //начало игры
@@ -129,6 +130,25 @@ function resetGame(){
   checkBestPoint();
 }
 
+// чтение из localStorage лучших очков
+function loadTopScore(){
+  if(!localStorage)
+  {
+    return 0;
+  }
+  const points = localStorage.getItem('topScore');
+  return points ? parseInt(points) : 0;
+}
+
+// сохранение в localStorage лучших очков
+function saveTopScore (points) {
+  if(!localStorage)
+  {
+    return 0;
+  }
+  localStorage.setItem('topScore', points);
+}
+
 let currentPoints = 0;
 let bestPoints = 0;
 let isGameStarted = false;
@@ -141,6 +161,9 @@ const topScore = document.getElementById('topScoreView');
 for(let bubble of bubbles){
   bubble.addEventListener('click', handleBubbleClick);
 }
+
+bestPoints = loadTopScore();
+updateBestPoints();
 
 const scoreView = document.getElementById('currentScoreView'); 
 
