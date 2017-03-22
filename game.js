@@ -52,13 +52,16 @@ function nextBubble(){
   showBubble(bubble);
   bubble.timeout = setTimeout(() => {
     hideBubble(bubble);
+    }, rand(1000, 2000));
+
+  setTimeout(() => {
     if(isGameStarted){
       nextBubble();
     }
     else{
       resetGame();
     }
-  }, 2000);
+  }, rand(1000, 2000));
 }
 
 // обработка клика по шарику
@@ -67,7 +70,6 @@ function handleBubbleClick () {
      clearTimeout(bubble.timeout);
      killBubble(bubble);
      hideBubble(bubble);
-     nextBubble();
      incPoints();
 }
 
@@ -82,15 +84,29 @@ function showPoints(){
   scoreView.dataset.points = currentPoints;
 }
 
-//
+
+
+//сброс очков
 function resetPoints(){
   currentPoints = 0;
   updateScoreboard();
 }
 
-//
+// обновление поля очков
 function updateScoreboard(){
   scoreView.dataset.points = currentPoints;
+}
+
+function updateBestPoints(){
+  topScore.dataset.points = bestPoints;
+}
+
+function checkBestPoint(){
+  if(currentPoints <= bestPoints){
+    return;
+  }
+  bestPoints = currentPoints;
+  updateBestPoints();
 }
 
 //начало игры
@@ -107,17 +123,20 @@ function stopGame(){
   isGameStarted = false;
   resetGame();
 }
-
+//сброс игры
 function resetGame(){
   showButton();
+  checkBestPoint();
 }
 
 let currentPoints = 0;
+let bestPoints = 0;
 let isGameStarted = false;
 const GAME_TIMEOUT = 15000;
 const lines = document.getElementsByClassName('hole');
 const bubbles = document.getElementsByClassName('bubble');
 const startButton = document.querySelector('.startButton');
+const topScore = document.getElementById('topScoreView');  
 
 for(let bubble of bubbles){
   bubble.addEventListener('click', handleBubbleClick);
