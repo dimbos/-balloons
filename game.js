@@ -149,6 +149,7 @@ function saveTopScore (points) {
   localStorage.setItem('topScore', points);
 }
 
+
 let currentPoints = 0;
 let bestPoints = 0;
 let isGameStarted = false;
@@ -157,6 +158,8 @@ const lines = document.getElementsByClassName('hole');
 const bubbles = document.getElementsByClassName('bubble');
 const startButton = document.querySelector('.startButton');
 const topScore = document.getElementById('topScoreView');  
+
+const timer = document.querySelector('.timer');
 
 for(let bubble of bubbles){
   bubble.addEventListener('click', handleBubbleClick);
