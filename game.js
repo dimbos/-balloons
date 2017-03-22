@@ -112,11 +112,15 @@ function checkBestPoint(){
 
 //начало игры
 function startGame(){
+  startedAt = Date.now();
+  isStarted = true;
   resetPoints();
   isGameStarted = true;
   hideButton();
   nextBubble();
   setTimeout(stopGame, GAME_TIMEOUT);
+  timerInterval = setInterval(updateTimer, 250);
+  tic();
 }
 
 //конец игры
@@ -150,9 +154,54 @@ function saveTopScore (points) {
 }
 
 
+function timeToString(time) {
+  const MSECONDS_IN_SEC = 1000;
+  const MSECONDS_IN_MIN = 60 * MSECONDS_IN_SEC;
+
+  let min = Math.floor(time / MSECONDS_IN_MIN);
+  let sec = Math.floor((time % MSECONDS_IN_MIN) / MSECONDS_IN_SEC);
+  let msec = (time % MSECONDS_IN_MIN) % MSECONDS_IN_SEC;
+  let spacer = msec > 500 ? ':' : '&nbsp;';
+  return [min, sec]
+    .map(number => number >= 10 ? number : `0${number}`)
+    .join(spacer);
+}
+
+function updateTimer() {
+  if (!isStarted) {
+    return;
+  }
+
+  let timeout = GAME_TIMEOUT - (Date.now() - startedAt);
+  if (timeout < 0 ) {
+    timeout = 0;
+  }
+  timer.innerHTML = timeToString(timeout);
+}
+
+function tic() {
+  setTimeout(() => {
+    if (isStarted) {
+      tic();
+    } else {
+      startButton.style.display = 'initial';
+      topScore = Math.max(points, topScore);
+      saveTopScore(topScore);
+      updateScoreboard(points);
+      clearInterval(timerInterval);
+    }
+  }, rand(500, 2500));
+}
+
+
+
 let currentPoints = 0;
 let bestPoints = 0;
 let isGameStarted = false;
+let startedAt;
+let isStarted = false;
+let timerInterval;
+
 const GAME_TIMEOUT = 15000;
 const lines = document.getElementsByClassName('hole');
 const bubbles = document.getElementsByClassName('bubble');
